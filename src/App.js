@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
 import logo from './logo.svg';
 import {Areachart} from './chart';
+import {BottomText} from './newComp';
 
-const ascending = [
+const data = [
   {
     "date": "2019",
     "close": 20095.55
@@ -30,6 +31,9 @@ const ascending = [
   }, {
     "date": "2027",
     "close": 104411.04
+  }, {
+    "date": "2028",
+    "close": 115408.66
   }, {
     "date": "2028",
     "close": 115408.66
@@ -94,23 +98,74 @@ const ascending = [
     "date": "2048",
     "close": 3880.5100000000093
   }
-]
+];
+
+let pickPoint = 0;
+let test = 0;
+for (const value of data) {
+  if (test >= value.close && pickPoint == 0) {
+    test = value.close;
+    pickPoint = value.date;
+  } else {
+    test = value.close;
+  }
+}
+
+var margin = {
+  top: 30,
+  right: 20,
+  bottom: 50,
+  left: 40
+};
+const value = '5,720';
+const amount = '$862,169';
 
 class App extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
-      data1: ascending,
+      data1: data,
       width: 960,
       height: 300,
+      margin: margin,
+      value: value,
+      pickPoint: pickPoint,
+      age: 81,
+      amount: amount
     };
+  }
+
+  /**
+   * Calculate & Update state of new dimensions
+   */
+  updateDimensions() {
+    console.log(window.innerWidth, window.innerHeight)
+    // if(window.innerWidth < 500) {   this.setState({ width: 450, height: 102 }); }
+    // else {   let update_width  = window.innerWidth-100;   let update_height =
+    // Math.round(update_width/4.4);   this.setState({ width: update_width, height:
+    // update_height }); }
+  }
+
+  /**
+   * Add event listener
+   */
+  componentDidMount() {
+    this.updateDimensions();
+    window.addEventListener("resize", this.updateDimensions.bind(this));
+  }
+
+  /**
+   * Remove event listener
+   */
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.updateDimensions.bind(this));
   }
 
   render() {
     return (
       <div className="App">
         <Areachart {...this.state}></Areachart>
+        {/* <BottomText {...this.state}></BottomText> */}
       </div>
     );
   }

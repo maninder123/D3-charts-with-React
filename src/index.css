@@ -18,17 +18,29 @@ body {
     border-radius: 8px;
     pointer-events: none;
 }
+.tooltip .right{
+    transform: rotate(-45deg);
+    border: solid #eee;
+    border-width:0 5px 5px 0;
+    display: inline-block;
+    padding: 6px;
+    top:18px;
+    left: 99%;
+    position: absolute;
+    background: #fff;
+}
 
 .top-content-wrapper span {
     color: #02857F;
     font-size: 14px;
     font-weight: 700;
 }
-
-.bottom-content-wrapper:after {
+/*
+.tooltip:after {
     content: '';
+    
     position: absolute;
-    left: 100.4%;
+    left: 100%;
     top: 8px;
     display: inline-block;
     width: 0;
@@ -36,7 +48,7 @@ body {
     border: 12px solid transparent;
     vertical-align: middle;
     border-left-color: #fff;
-}
+}*/
 
 .tooltip .top-content-wrapper {
     border-bottom: 1px solid #ccc;
