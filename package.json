@@ -5,6 +5,7 @@
   "dependencies": {
     "check": "^1.0.0",
     "d3": "^5.1.0",
+    "d3-interpolate": "^1.1.6",
     "react": "^16.3.2",
     "react-bootstrap": "^0.32.1",
     "react-d3-charts": "^1.0.46",

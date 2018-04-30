@@ -1,137 +1,164 @@
 import React, {Component} from 'react';
 import logo from './logo.svg';
 import {Areachart} from './chart';
-import {BottomText} from './newComp';
 
 const data = [
   {
-    "date": "2019",
-    "close": 20095.55
+    "actualYear": "2019",
+    "ProjectedValue": 20095.55
   }, {
-    "date": "2020",
-    "close": 30287.56
+    "actualYear": "2020",
+    "ProjectedValue": 30287.56
   }, {
-    "date": "2021",
-    "close": 40576.95
+    "actualYear": "2021",
+    "ProjectedValue": 40576.95
   }, {
-    "date": "2022",
-    "close": 50964.65
+    "actualYear": "2022",
+    "ProjectedValue": 50964.65
   }, {
-    "date": "2023",
-    "close": 61451.6
+    "actualYear": "2023",
+    "ProjectedValue": 61451.6
   }, {
-    "date": "2024",
-    "close": 72038.76
+    "actualYear": "2024",
+    "ProjectedValue": 72038.76
   }, {
-    "date": "2025",
-    "close": 82727.07
+    "actualYear": "2025",
+    "ProjectedValue": 82727.07
   }, {
-    "date": "2026",
-    "close": 93517.51
+    "actualYear": "2026",
+    "ProjectedValue": 93517.51
   }, {
-    "date": "2027",
-    "close": 104411.04
+    "actualYear": "2027",
+    "ProjectedValue": 104411.04
   }, {
-    "date": "2028",
-    "close": 115408.66
+    "actualYear": "2028",
+    "ProjectedValue": 115408.66
   }, {
-    "date": "2028",
-    "close": 115408.66
+    "actualYear": "2028",
+    "ProjectedValue": 115408.66
   }, {
-    "date": "2029",
-    "close": 111985.7
+    "actualYear": "2029",
+    "ProjectedValue": 111985.7
   }, {
-    "date": "2030",
-    "close": 108387.23000000001
+    "actualYear": "2030",
+    "ProjectedValue": 108387.23000000001
   }, {
-    "date": "2031",
-    "close": 104606.1
+    "actualYear": "2031",
+    "ProjectedValue": 104606.1
   }, {
-    "date": "2032",
-    "close": 100634.86
+    "actualYear": "2032",
+    "ProjectedValue": 100634.86
   }, {
-    "date": "2033",
-    "close": 96465.79
+    "actualYear": "2033",
+    "ProjectedValue": 96465.79
   }, {
-    "date": "2034",
-    "close": 92090.87000000001
+    "actualYear": "2034",
+    "ProjectedValue": 92090.87000000001
   }, {
-    "date": "2035",
-    "close": 87501.70999999999
+    "actualYear": "2035",
+    "ProjectedValue": 87501.70999999999
   }, {
-    "date": "2036",
-    "close": 82689.65
+    "actualYear": "2036",
+    "ProjectedValue": 82689.65
   }, {
-    "date": "2037",
-    "close": 77645.64
+    "actualYear": "2037",
+    "ProjectedValue": 77645.64
   }, {
-    "date": "2038",
-    "close": 72360.29000000001
+    "actualYear": "2038",
+    "ProjectedValue": 72360.29000000001
   }, {
-    "date": "2039",
-    "close": 66823.85999999999
+    "actualYear": "2039",
+    "ProjectedValue": 66823.85999999999
   }, {
-    "date": "2040",
-    "close": 61026.159999999996
+    "actualYear": "2040",
+    "ProjectedValue": 61026.159999999996
   }, {
-    "date": "2041",
-    "close": 54956.66
+    "actualYear": "2041",
+    "ProjectedValue": 54956.66
   }, {
-    "date": "2042",
-    "close": 48604.369999999995
+    "actualYear": "2042",
+    "ProjectedValue": 48604.369999999995
   }, {
-    "date": "2043",
-    "close": 41957.89
+    "actualYear": "2043",
+    "ProjectedValue": 41957.89
   }, {
-    "date": "2044",
-    "close": 35005.36
+    "actualYear": "2044",
+    "ProjectedValue": 35005.36
   }, {
-    "date": "2045",
-    "close": 27734.430000000008
+    "actualYear": "2045",
+    "ProjectedValue": 27734.430000000008
   }, {
-    "date": "2046",
-    "close": 20132.289999999994
+    "actualYear": "2046",
+    "ProjectedValue": 20132.289999999994
   }, {
-    "date": "2047",
-    "close": 12185.599999999991
+    "actualYear": "2047",
+    "ProjectedValue": 12185.599999999991
   }, {
-    "date": "2048",
-    "close": 3880.5100000000093
+    "actualYear": "2048",
+    "ProjectedValue": 3880.5100000000093
   }
 ];
 
+// calculating the peakPoint
 let pickPoint = 0;
-let test = 0;
+let tempValue = 0;
 for (const value of data) {
-  if (test >= value.close && pickPoint == 0) {
-    test = value.close;
-    pickPoint = value.date;
+  if (tempValue >= value.ProjectedValue && pickPoint == 0) {
+    tempValue = value.ProjectedValue;
+    pickPoint = value.actualYear;
   } else {
-    test = value.close;
+    tempValue = value.ProjectedValue;
   }
 }
 
+// define the margins.
 var margin = {
   top: 30,
   right: 20,
   bottom: 50,
   left: 40
 };
+
+// set the const values
 const value = '5,720';
 const amount = '$862,169';
+const chartColor = ["#DEE6FB", "#C7F6F5"];
+const minSvgWidth = 360;
+const maxSvgWidth = 960;
+const minSvgHeight = 280;
+const maxSvgHeight = 320;
+const imgSize = 50;
+const ascensionDescensionRect_width = 50;
+const ascensionDescensionRect_height = 30;
+var width = window.innerWidth;
+var height = window.innerHeight;
+const tooltipWidth = minSvgWidth + margin.right;
+const linestroke = ['#6864B4','#519895'];
+
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data1: data,
-      width: 960,
-      height: 300,
+      data: data,
+      width: width,
+      height: height,
       margin: margin,
+      imgSize: imgSize,
       value: value,
       pickPoint: pickPoint,
+      ascensionDescensionRect_width: ascensionDescensionRect_width,
+      ascensionDescensionRect_height: ascensionDescensionRect_height,
       age: 81,
-      amount: amount
+      amount: amount,
+      chartColor: chartColor,
+      linestroke: linestroke,
+      minSvgWidth: minSvgWidth,
+      maxSvgWidth: maxSvgWidth,
+      minSvgHeight: minSvgHeight,
+      maxSvgHeight: maxSvgHeight,
+      tooltipWidth: tooltipWidth,
+      resize: false,
     };
   }
 
@@ -139,11 +166,14 @@ class App extends Component {
    * Calculate & Update state of new dimensions
    */
   updateDimensions() {
-    console.log(window.innerWidth, window.innerHeight)
-    // if(window.innerWidth < 500) {   this.setState({ width: 450, height: 102 }); }
-    // else {   let update_width  = window.innerWidth-100;   let update_height =
-    // Math.round(update_width/4.4);   this.setState({ width: update_width, height:
-    // update_height }); }
+    if (window.innerWidth >= maxSvgWidth) {
+        this.setState({width: maxSvgWidth, height: maxSvgHeight, resize: true});
+    } else if(window.innerWidth <=  minSvgWidth){
+        this.setState({width: minSvgWidth, height: minSvgHeight, resize: true});
+      // let update_height = Math.round(update_width / 4.4);
+    }else {
+      this.setState({width: window.innerWidth - margin.left-margin.right, height: minSvgHeight, resize: true});
+    }
   }
 
   /**
@@ -160,12 +190,10 @@ class App extends Component {
   componentWillUnmount() {
     window.removeEventListener("resize", this.updateDimensions.bind(this));
   }
-
   render() {
     return (
-      <div className="App">
+      <div className="svg-container" style={{width: '100%'}}>
         <Areachart {...this.state}></Areachart>
-        {/* <BottomText {...this.state}></BottomText> */}
       </div>
     );
   }
