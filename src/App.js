@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {timeFormat, timeParse} from 'd3-time-format';
 import logo from './logo.svg';
 import {Areachart} from './chart';
 
@@ -133,14 +134,22 @@ const ascensionDescensionRect_height = 30;
 var width = window.innerWidth;
 var height = window.innerHeight;
 const tooltipWidth = minSvgWidth + margin.right;
-const linestroke = ['#6864B4','#519895'];
+const linestroke = ['#6864B4', '#519895'];
 
+var parseTime = timeParse("%Y");
+var dateFormateData = data;
+// format the data for x-axis year formate
+dateFormateData.forEach(function (d) {
+  d.x = parseTime(d.actualYear);
+  d.y = +d.ProjectedValue;
+});
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
       data: data,
+      dateFormateData: dateFormateData,
       width: width,
       height: height,
       margin: margin,
@@ -158,7 +167,7 @@ class App extends Component {
       minSvgHeight: minSvgHeight,
       maxSvgHeight: maxSvgHeight,
       tooltipWidth: tooltipWidth,
-      resize: false,
+      resize: false
     };
   }
 
@@ -167,12 +176,16 @@ class App extends Component {
    */
   updateDimensions() {
     if (window.innerWidth >= maxSvgWidth) {
-        this.setState({width: maxSvgWidth, height: maxSvgHeight, resize: true});
-    } else if(window.innerWidth <=  minSvgWidth){
-        this.setState({width: minSvgWidth, height: minSvgHeight, resize: true});
+      this.setState({width: maxSvgWidth, height: maxSvgHeight, resize: true});
+    } else if (window.innerWidth <= minSvgWidth) {
+      this.setState({width: minSvgWidth, height: minSvgHeight, resize: true});
       // let update_height = Math.round(update_width / 4.4);
-    }else {
-      this.setState({width: window.innerWidth - margin.left-margin.right, height: minSvgHeight, resize: true});
+    } else {
+      this.setState({
+        width: window.innerWidth - margin.left - margin.right,
+        height: minSvgHeight,
+        resize: true
+      });
     }
   }
 
@@ -192,7 +205,9 @@ class App extends Component {
   }
   render() {
     return (
-      <div className="svg-container" style={{width: '100%'}}>
+      <div className="svg-container" style={{
+        width: '100%'
+      }}>
         <Areachart {...this.state}></Areachart>
       </div>
     );
