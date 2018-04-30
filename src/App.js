@@ -205,7 +205,9 @@ class App extends Component {
   }
   render() {
     return (
-      <div className="svg-container" style={{width: '100%'}}>
+      <div className="svg-container" style={{
+        width: '100%'
+      }}>
         <Areachart {...this.state}></Areachart>
       </div>
     );
