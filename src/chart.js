@@ -26,7 +26,7 @@ export class Areachart extends Component {
 
     componentDidMount() {
         this.renderChart(this);
-     }
+    }
 
     // function to render the area chart
     renderChart(that) {
@@ -48,7 +48,7 @@ export class Areachart extends Component {
             .style("position", "absolute")
             .html('<div class="tooltip" style="opacity: 1; width: ' + tooltipWidth + 'px"><div class= "top-content-wrapper"><p>You will have <span>$' + that.props.value + '/month</span> to spend in retirement</p></div><div class= "bottom-content-wrappe' +
                     'r"><p>Assuming the average life expectancy of <span>' + that.props.age + ' year old</span>,you can receive a total of <span>' + that.props.amount + '</span> when you retire at 65</p></div> <i class="right"></i></div>');
-        
+
         // adding tootip to the chart
         var tooltipChart = select("body")
             .append("div")
@@ -56,40 +56,33 @@ export class Areachart extends Component {
             .style("position", "absolute");
 
         var max_close = max(that.props.data, function (d) {
-            return d.ProjectedValue;
+            return d.y;
         });
-        var parseTime = timeParse("%Y");
-        var dateFormateData = that.props.data;
-
-        // format the data for x-axis year formate
-        dateFormateData.forEach(function (d) {
-            d.dummyYear = parseTime(d.actualYear);
-            d.ProjectedValue = +d.ProjectedValue;
-        });
+        var dateFormateData = that.props.dateFormateData;
         //defining x-scale
-        const x = scaleTime().domain([
+        const xScale = scaleTime().domain([
             min(dateFormateData, function (d) {
-                return d.dummyYear;
+                return d.x;
             }),
             max(dateFormateData, function (d) {
-                return d.dummyYear;
+                return d.x;
             })
         ]).range([0, width]);
 
         // defining y-scale
-        const y = scaleLinear()
+        const yScale = scaleLinear()
             .range([height, that.props.margin.top])
             .domain([
                 min(that.props.data, function (d) {
-                    return d.ProjectedValue;
+                    return d.y;
                 }),
                 max(that.props.data, function (d) {
-                    return d.ProjectedValue;
+                    return d.y;
                 })
             ]);
-
+        // defining x-Axis
         var xAxis = axisBottom()
-            .scale(x)
+            .scale(xScale)
             .tickFormat(timeFormat("%Y"))
         // appending initial text to the chart
         select(node)
@@ -103,7 +96,7 @@ export class Areachart extends Component {
         //appending rectangle to highlight the max year
         select(node)
             .append("rect")
-            .attr("transform", "translate(" + (x(new Date(that.props.pickPoint)) + that.props.margin.left - rectWith / 2) + " ," + (height + that.props.margin.top) + ")")
+            .attr("transform", "translate(" + (xScale(new Date(that.props.pickPoint)) + that.props.margin.left - rectWith / 2) + " ," + (height + that.props.margin.top) + ")")
             .attr("width", rectWith)
             .attr("height", rectHeight)
             .attr("rx", 10)
@@ -117,7 +110,7 @@ export class Areachart extends Component {
         var text = that.props.data[len - 1].actualYear;
         select(node)
             .append("text")
-            .attr("transform", "translate(" + (x(new Date(that.props.pickPoint)) + (that.props.margin.left * 2) - rectWith / 2 + 2) + " ," + (height + that.props.margin.top + that.props.margin.bottom / 2) + ")") // +2 added as the padding to fit text into center of rectangle
+            .attr("transform", "translate(" + (xScale(new Date(that.props.pickPoint)) + (that.props.margin.left * 2) - rectWith / 2 + 2) + " ," + (height + that.props.margin.top + that.props.margin.bottom / 2) + ")") // +2 added as the padding to fit text into center of rectangle
             .style("text-anchor", "end")
             .attr('fill', "black")
             .attr("stroke", "none")
@@ -126,7 +119,7 @@ export class Areachart extends Component {
         //appending text at x-axis after max-year rectangle
         select(node)
             .append("text")
-            .attr("transform", "translate(" + (x(new Date(that.props.pickPoint)) + (that.props.margin.left * 4) - rectWith / 2) + " ," + (height + that.props.margin.top + that.props.margin.bottom / 2) + ")")
+            .attr("transform", "translate(" + (xScale(new Date(that.props.pickPoint)) + (that.props.margin.left * 4) - rectWith / 2) + " ," + (height + that.props.margin.top + that.props.margin.bottom / 2) + ")")
             .style("text-anchor", "end")
             .attr('fill', "#DADADA")
             .style("font-style", "italic")
@@ -137,7 +130,7 @@ export class Areachart extends Component {
         select(node)
             .append("svg:image")
             .attr('x', function () {
-                return x(new Date(that.props.pickPoint)) + that.props.margin.left - (imgSize / 2)
+                return xScale(new Date(that.props.pickPoint)) + that.props.margin.left - (imgSize / 2)
             })
             .attr('y', imgSize - that.props.margin.left)
             .attr('width', imgSize)
@@ -168,7 +161,7 @@ export class Areachart extends Component {
             });
 
         // mouse hover on the chart calling y-axis and appending
-        var yAxis = axisLeft().scale(y)
+        var yAxis = axisLeft().scale(yScale)
 
         select(node)
             .append('g')
@@ -194,21 +187,21 @@ export class Areachart extends Component {
         var area = d3
             .area()
             .x(function (d) {
-                return x(d.dummyYear);
+                return xScale(d.x);
             })
             .y0(height)
             .y1(function (d) {
-                return y(d.ProjectedValue);
+                return yScale(d.y);
             });
 
         // define the line on top of the area
         var valueline = d3
             .line()
             .x(function (d) {
-                return x(d.dummyYear);
+                return xScale(d.x);
             })
             .y(function (d) {
-                return y(d.ProjectedValue);
+                return yScale(d.y);
             })
 
         dataset = dataset.sort(function (x, y) {
@@ -230,7 +223,7 @@ export class Areachart extends Component {
         })
         datanew.push(descensionData);
         datanew.push(ascensionData);
-        //datanew will hold the chunk of data with ProjectedValue > 2028.
+        //datanew will hold the chunk of data with y > 2028.
         datanew.forEach(function (data, i) { //iterate through the dataset
             if (data[i].actualYear >= parseInt(that.props.pickPoint)) {
                 var color = that.props.chartColor[0];
@@ -247,8 +240,8 @@ export class Areachart extends Component {
                 .attr("d", area)
                 .attr("transform", "translate(" + that.props.margin.left + "," + that.props.margin.top + ")")
                 .on("mousemove", function (d, i) {
-                    var year = x.invert(d3.mouse(this)[0])
-                    var value = y.invert(d3.mouse(this)[1])
+                    var year = xScale.invert(d3.mouse(this)[0])
+                    var value = yScale.invert(d3.mouse(this)[1])
                     tooltipChart
                         .style("opacity", 1)
                         .style("left", (d3.event.pageX - 160) + "px") // 140 is the tooltip width and 20 is padding to maintain
@@ -260,23 +253,25 @@ export class Areachart extends Component {
                     tooltipChart.style("display", "none")
                 });
 
-            // add the valueline path.   
+            // add the valueline path.
             select(node)
-            .append("path")     
-            .datum(data)     
-            .attr("class", "pathLine")
-            .attr('fill','none')
-            .style("stroke", linestroke)     
-            .style("stroke-width", '2px')     
-            .attr("d", valueline)
-            .attr("transform", "translate(" + that.props.margin.left + "," + that.props.margin.top + ")");
+                .append("path")
+                .datum(data)
+                .attr("class", "pathLine")
+                .attr('fill', 'none')
+                .style("stroke", linestroke)
+                .style("stroke-width", '2px')
+                .attr("d", valueline)
+                .attr("transform", "translate(" + that.props.margin.left + "," + that.props.margin.top + ")");
         });
     }
     render() {
         if (this.props.resize) {
-            // remove the svg element first on resize window 
-            //d3.selectAll("svg > *").remove();
-            d3.selectAll(".mainSvg > *").remove();
+            // remove the svg element first on resize window d3.selectAll("svg >
+            // *").remove();
+            d3
+                .selectAll(".mainSvg > *")
+                .remove();
             // render the chart
             const foo = this.renderChart(this);
         } else {
