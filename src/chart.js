@@ -13,6 +13,14 @@ import PropTypes from 'prop-types';
 import './App.css';
 import Logo from './Logo.png';
 
+function getTextWidth(text) {
+    var hidden = select(".chart-tooltip-content").append('<span  style="display:none;">' + text + '</span>');
+    // $('body').append(hidden);
+    var width = hidden.width();
+    hidden.remove();
+    return width;
+}
+
 // main compnent to draw the chart
 export class Areachart extends Component {
     constructor(props) {
@@ -26,6 +34,7 @@ export class Areachart extends Component {
 
     componentDidMount() {
         this.renderChart(this);
+        // this.getTexWidth(this);
     }
 
     // function to render the area chart
@@ -167,7 +176,9 @@ export class Areachart extends Component {
             .append('g')
             .attr('className', 'axis axis--x')
             .attr("transform", "translate(" + that.props.margin.left + "," + (height + that.props.margin.top) + ")")
-        // .call(xAxis) appending line to the bottom of the chart
+            //.call(yAxis) 
+        
+        //appending line to the bottom of the chart
         select(node)
             .append('line')
             .attr("x1", 0)
@@ -241,13 +252,19 @@ export class Areachart extends Component {
                 .attr("transform", "translate(" + that.props.margin.left + "," + that.props.margin.top + ")")
                 .on("mousemove", function (d, i) {
                     var year = xScale.invert(d3.mouse(this)[0])
-                    var value = yScale.invert(d3.mouse(this)[1])
+                    var value_y; //= yScale.invert(d3.mouse(this)[0])
+                    // console.log(data);
+                    for (const value of data) {
+                        if (year.getFullYear() == parseInt(value.actualYear)) {
+                            value_y = value.y;
+                        }
+                      }
                     tooltipChart
                         .style("opacity", 1)
                         .style("left", (d3.event.pageX - 160) + "px") // 140 is the tooltip width and 20 is padding to maintain
                         .style("display", "block")
                         .style("top", (d3.event.pageY - 25) + "px") // 25 to bring the tooltip in middle (padding)
-                        .html('<div class="tooltipChart" style="opacity: 1; width: ' + 140 + 'px"><div class= "chart-tooltip-content"><span>Year : ' + year.getFullYear() + '</span></br><span>Value : ' + value.toFixed(5) + '</span></div><i class="right"></i></div>');
+                        .html('<div class="tooltipChart" style="opacity: 1; width: ' + 140 + 'px"><div class= "chart-tooltip-content"><span>Year : ' + year.getFullYear() + '</span></br><span>Value : ' + value_y.toFixed(2) + '</span></div><i class="right"></i></div>');
                 })
                 .on("mouseout", function (d) {
                     tooltipChart.style("display", "none")
@@ -269,9 +286,7 @@ export class Areachart extends Component {
         if (this.props.resize) {
             // remove the svg element first on resize window d3.selectAll("svg >
             // *").remove();
-            d3
-                .selectAll(".mainSvg > *")
-                .remove();
+            d3.selectAll(".mainSvg > *").remove();
             // render the chart
             const foo = this.renderChart(this);
         } else {
