@@ -13,14 +13,6 @@ import PropTypes from 'prop-types';
 import './App.css';
 import Logo from './Logo.png';
 
-function getTextWidth(text) {
-    var hidden = select(".chart-tooltip-content").append('<span  style="display:none;">' + text + '</span>');
-    // $('body').append(hidden);
-    var width = hidden.width();
-    hidden.remove();
-    return width;
-}
-
 // main compnent to draw the chart
 export class Areachart extends Component {
     constructor(props) {
@@ -234,6 +226,7 @@ export class Areachart extends Component {
         })
         datanew.push(descensionData);
         datanew.push(ascensionData);
+        console.log(datanew);
         //datanew will hold the chunk of data with y > 2028.
         datanew.forEach(function (data, i) { //iterate through the dataset
             if (data[i].actualYear >= parseInt(that.props.pickPoint)) {
@@ -252,19 +245,21 @@ export class Areachart extends Component {
                 .attr("transform", "translate(" + that.props.margin.left + "," + that.props.margin.top + ")")
                 .on("mousemove", function (d, i) {
                     var year = xScale.invert(d3.mouse(this)[0])
-                    var value_y; //= yScale.invert(d3.mouse(this)[0])
-                    // console.log(data);
+                    var value_y;
                     for (const value of data) {
                         if (year.getFullYear() == parseInt(value.actualYear)) {
                             value_y = value.y;
                         }
                       }
+                    if(value_y){
                     tooltipChart
                         .style("opacity", 1)
                         .style("left", (d3.event.pageX - 160) + "px") // 140 is the tooltip width and 20 is padding to maintain
                         .style("display", "block")
                         .style("top", (d3.event.pageY - 25) + "px") // 25 to bring the tooltip in middle (padding)
-                        .html('<div class="tooltipChart" style="opacity: 1; width: ' + 140 + 'px"><div class= "chart-tooltip-content"><span>Year : ' + year.getFullYear() + '</span></br><span>Value : ' + value_y.toFixed(2) + '</span></div><i class="right"></i></div>');
+                        .html('<div class="tooltipChart" style="opacity: 1; width: ' + 140 + 'px"><div class= "chart-tooltip-content"><span>Year : ' +
+                         year.getFullYear() + '</span></br><span>Value : ' + parseFloat(value_y).toFixed(2) + '</span></div><i class="right"></i></div>');
+                    }
                 })
                 .on("mouseout", function (d) {
                     tooltipChart.style("display", "none")

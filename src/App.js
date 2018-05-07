@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {timeFormat, timeParse} from 'd3-time-format';
-import logo from './logo.svg';
 import {Areachart} from './chart';
 
 const data = [
