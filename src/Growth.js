@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
 import {timeFormat, timeParse} from 'd3-time-format';
 import {GrowthAreachart} from './growthChart';
-import educationMaker from './educationMaker.svg';
-import retirementMaker from './retirementMaker.svg';
+import educationMaker from './educationMaker.png';
+import retirementMaker from './retirementMaker.png';
+import Running from './Running.png';
 
 const goal_data = [
   {
@@ -73,10 +74,7 @@ const goalsArray = [
 ]
 
 // calculating the peakPoint
-let peakPoint = goalsArray[1].actualYear;
-let tempValue = 0;
-
-console.log('pickPoint',goalsArray)
+const peakPoint = goalsArray[1].actualYear;
 // define the margins.
 var margin = {
   top: 30,
@@ -97,12 +95,10 @@ const maxSvgHeight = 400;
 const imgSize = 50;
 const ascensionDescensionRect_width = 60;
 const ascensionDescensionRect_height = 30;
-const eduImageTextWidth = 200;
-const retireImageTextWidth = 200;
+const eduImageTextWidth = 150;
+const retireImageTextWidth = 170;
 var width = window.innerWidth;
 var height = window.innerHeight;
-// var width = 960;
-// var height = 400;
 
 var parseTime = timeParse("%Y");
 var dateFormateData = goal_data;
@@ -128,6 +124,7 @@ class Growth extends Component {
       margin: margin,
       imgSize: imgSize,
       peakPoint: peakPoint,
+      RunningIcon: Running,
       eduImageTextWidth: eduImageTextWidth,
       retireImageTextWidth: retireImageTextWidth,
       ascensionDescensionRect_width: ascensionDescensionRect_width,
@@ -149,7 +146,7 @@ class Growth extends Component {
     if (window.innerWidth >= maxSvgWidth) {
       this.setState({width: maxSvgWidth, height: maxSvgHeight, resize: true});
     } else if (window.innerWidth <= minSvgWidth) {
-      this.setState({width: minSvgWidth, height: minSvgHeight, eduImageTextWidth: 180, retireImageTextWidth: 180, resize: true});
+      this.setState({width: minSvgWidth, height: minSvgHeight, resize: true});
       // let update_height = Math.round(update_width / 4.4);
     } else {
       this.setState({

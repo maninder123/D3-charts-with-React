@@ -10,7 +10,6 @@ import {min, max} from 'd3-array';
 import {curveBasis, area} from 'd3-shape';
 import {select, selectAll} from 'd3-selection';
 import PropTypes from 'prop-types';
-import Running from './Running.svg';
 
 // main compnent to draw the chart
 export class GrowthAreachart extends Component {
@@ -25,7 +24,6 @@ export class GrowthAreachart extends Component {
 
     componentDidMount() {
         this.renderGrowChart(this);
-        // this.getTexWidth(this);
     }
 
     // function to render the area chart
@@ -68,25 +66,35 @@ export class GrowthAreachart extends Component {
             .scale(xScale)
             .tickFormat(timeFormat("%Y"))
 
-            console.log(xScale(new Date(that.props.goals[0].actualYear)), that.props.eduImageTextWidth)
-    // adding tootip to the first target
+    // handling the text div positions on window resize. as here the div is on body not on the svg....
+            var left = 4;
+            if(window.innerWidth <= 1060){
+                left = (that.props.margin.left*2)+20 //100   +20 as the padding
+            }else{
+                if(window.innerWidth >= 1300){
+                    left = -10;
+                }else{
+                    left = (that.props.margin.left*2)-10 //70  -10 as the padding
+                }
+            }
+    // adding text to the first target education maker
         var tooltipFirstGoal = select("body")
             .append("div")
             .attr("id", "eduDiv")
             .style("display", "block")
             .style("position", "absolute")
-            .style("left", (xScale(new Date(that.props.goals[0].actualYear))) - (that.props.eduImageTextWidth/2) - 10 + "px")
+            .style("left", xScale(new Date(that.props.goals[0].actualYear))-left +"px")
             .style("top", yScale(that.props.goals[0].value) + "px")
             .html('<div class="tooltip-education" style="opacity: 1; width:'+ that.props.eduImageTextWidth +'px "><p>Growing Wealth Goal</p> <h2><span>'+ 
             that.props.growingAmt +'</span></h2></div>');
 
-        // adding tootip to the peak point
+        // adding text to the peak point retirement maker
         var tooltipSecondGoal = select("body")
             .append("div")
             .attr("id", "retireDiv")
             .style("display", "block")
             .style("position", "absolute")
-            .style("left",xScale(new Date(that.props.peakPoint)) - (that.props.retireImageTextWidth/2) - 10 + "px")
+            .style("left",xScale(new Date(that.props.peakPoint)) - left-40 + "px")
             .style("top","10px")
             .html('<div class="tooltip-retirement" style="opacity: 1; width:'+ that.props.retireImageTextWidth +'px "><p>Retirement Savings Goal </p><h2><span>'+ 
             that.props.retirementAmt +'</span></h2> </div>');
@@ -200,15 +208,10 @@ export class GrowthAreachart extends Component {
                 .attr('x', function () {
                     return xScale(new Date(that.props.goals[0].actualYear)) + that.props.margin.left - (imgSize / 2)
                 })
-                .attr('y', yScale(that.props.goals[0].value)+5) // +5 is the margin of the image.
+                .attr('y', yScale(that.props.goals[0].value)+8) // +8 is the margin of the image.
                 .attr('width', imgSize)
                 .attr('height', imgSize)
                 .attr("xlink:href", that.props.goals[0].icon.educationMaker)
-                .on('mousemove', function(){
-                })
-                .on('mouseout', function(){
-
-                })
 
         //appending image for the peak year retirement Maker
         select(node)
@@ -216,14 +219,10 @@ export class GrowthAreachart extends Component {
             .attr('x', function () {
                 return xScale(new Date(that.props.peakPoint)) + that.props.margin.left - (imgSize / 2)
             })
-            .attr('y', imgSize - that.props.margin.left)
+            .attr('y', imgSize - that.props.margin.top-5)// -5 is the padding to remove between chart and image
             .attr('width', imgSize)
             .attr('height', imgSize)
-            .attr("xlink:href", that.props.goals[1].icon.retirementMaker)          
-            .on("mousemove", function (d) {
-            })
-            .on("mouseout", function (d) {
-            });
+            .attr("xlink:href", that.props.goals[1].icon.retirementMaker)
 
         // mouse hover on the chart calling y-axis and appending
         var yAxis = axisLeft().scale(yScale)
@@ -306,10 +305,6 @@ export class GrowthAreachart extends Component {
                 .style("fill", color)
                 .attr("d", area)
                 .attr("transform", "translate(" + that.props.margin.left + "," + that.props.margin.top + ")")
-                .on("mousemove", function (d, i) {
-                })
-                .on("mouseout", function (d) {
-                });
 
             // add the valueline path.
             select(node)
@@ -325,8 +320,8 @@ export class GrowthAreachart extends Component {
                 //appending line to the bottom of the first target
                 select(node)
                 .append('line')
-                .attr("x1", xScale(new Date("2021"))+that.props.margin.left)
-                .attr("x2", xScale(new Date("2021"))+that.props.margin.left)
+                .attr("x1", xScale(new Date(that.props.goals[0].actualYear))+that.props.margin.left)
+                .attr("x2", xScale(new Date(that.props.goals[0].actualYear))+that.props.margin.left)
                 .attr("y1", yScale(that.props.goals[0].value) + that.props.margin.bottom)//height + that.props.margin.top + 1) // 1 s the padding to adjust the line in center
                 .attr("y2", height + that.props.margin.top)
                 .attr("stroke", "#25B3B0")
@@ -351,9 +346,9 @@ export class GrowthAreachart extends Component {
             .attr('y', yScale(that.props.goal_data[0].value)-that.props.margin.top + (10)) // +10 is to touch the lines by persons feet
             .attr('width', 80)
             .attr('height', 80)
-            .attr("xlink:href", Running)
-
+            .attr("xlink:href", that.props.RunningIcon)
     }
+
     render() {
         if (this.props.resize) {
             // remove the svg element first on resize window 
