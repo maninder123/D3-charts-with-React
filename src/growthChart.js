@@ -39,27 +39,16 @@ export class GrowthAreachart extends Component {
         var height = that.props.height - that.props.margin.top - that.props.margin.bottom;
 
         var dateFormateData = that.props.dateFormateData;
+
         //defining x-scale
-        const xScale = scaleTime().domain([
-            min(dateFormateData, function (d) {
-                return d.x;
-            }),
-            max(dateFormateData, function (d) {
-                return d.x;
-            })
-        ]).range([0, width]);
+        const xScale = scaleTime()
+                .domain([that.props.scales.minValue_x, that.props.scales.maxValue_x])
+                .range([0, width]);
 
         // defining y-scale
         const yScale = scaleLinear()
-            .range([height, that.props.margin.top])
-            .domain([
-                min(that.props.goal_data, function (d) {
-                    return d.y;
-                }),
-                max(that.props.goal_data, function (d) {
-                    return d.y;
-                })
-            ]);
+                .range([height, that.props.margin.top])
+                .domain([that.props.scales.minValue_y, that.props.scales.maxValue_y]);
 
         // defining x-Axis
         var xAxis = axisBottom()
@@ -98,6 +87,12 @@ export class GrowthAreachart extends Component {
             .style("top","10px")
             .html('<div class="tooltip-retirement" style="opacity: 1; width:'+ that.props.retireImageTextWidth +'px "><p>Retirement Savings Goal </p><h2><span>'+ 
             that.props.retirementAmt +'</span></h2> </div>');
+
+     // adding tootip to the chart
+        var tooltipChart = select("body")
+            .append("div")
+            .style("display", "none")
+            .style("position", "absolute");
 
         // Adding first legend rectangle
         select(node)
@@ -305,7 +300,28 @@ export class GrowthAreachart extends Component {
                 .style("fill", color)
                 .attr("d", area)
                 .attr("transform", "translate(" + that.props.margin.left + "," + that.props.margin.top + ")")
-
+                .on("mousemove", function (d, i) {
+                    var year = xScale.invert(d3.mouse(this)[0])
+                    var value_y;
+                    for (const value of data) {
+                        if (year.getFullYear() == parseInt(value.actualYear)) {
+                            value_y = value.y;
+                        }
+                      }
+                    if(value_y){
+                    tooltipChart
+                        .style("opacity", 1)
+                        .style("left", (d3.event.pageX - 160) + "px") // 140 is the tooltip width and 20 is padding to maintain
+                        .style("display", "block")
+                        .style("top", (d3.event.pageY - 25) + "px") // 25 to bring the tooltip in middle (padding)
+                        .html('<div class="tooltipChart" style="opacity: 1; width: ' + 140 + 'px"><div class= "chart-tooltip-content"><span>Year : ' +
+                         year.getFullYear() + '</span></br><span>Value : ' + parseFloat(value_y).toFixed(2) + '</span></div><i class="right"></i></div>');
+                    }
+                })
+                .on("mouseout", function (d) {
+                    tooltipChart.style("display", "none")
+                });
+                
             // add the valueline path.
             select(node)
                 .append("path")

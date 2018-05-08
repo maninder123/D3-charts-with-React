@@ -109,6 +109,15 @@ dateFormateData.forEach(function (d) {
   d.y = +d.value;
 });
 
+// defining the scales data
+var scales = {
+  maxValue_x : Math.max(...dateFormateData.map(d => d.x)),
+  minValue_x : Math.min(...dateFormateData.map(d => d.x)),
+  maxValue_y : Math.max(...goal_data.map(d => d.y)),
+  minValue_y : Math.min(...goal_data.map(d => d.y))
+};
+
+
 class Growth extends Component {
   constructor(props) {
     super(props);
@@ -125,6 +134,7 @@ class Growth extends Component {
       imgSize: imgSize,
       peakPoint: peakPoint,
       RunningIcon: Running,
+      scales: scales,
       eduImageTextWidth: eduImageTextWidth,
       retireImageTextWidth: retireImageTextWidth,
       ascensionDescensionRect_width: ascensionDescensionRect_width,
