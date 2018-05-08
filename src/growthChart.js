@@ -55,36 +55,36 @@ export class GrowthAreachart extends Component {
             .scale(xScale)
             .tickFormat(timeFormat("%Y"))
 
-    // handling the text div positions on window resize. as here the div is on body not on the svg....
-            var left = 4;
-            if(window.innerWidth <= 1060){
-                left = (that.props.margin.left*2)+20 //100   +20 as the padding
-            }else{
-                if(window.innerWidth >= 1300){
-                    left = -10;
-                }else{
-                    left = (that.props.margin.left*2)-10 //70  -10 as the padding
-                }
-            }
-    // adding text to the first target education maker
-        var tooltipFirstGoal = select("body")
-            .append("div")
-            .attr("id", "eduDiv")
-            .style("display", "block")
-            .style("position", "absolute")
-            .style("left", xScale(new Date(that.props.goals[0].actualYear))-left +"px")
-            .style("top", yScale(that.props.goals[0].value) + "px")
-            .html('<div class="tooltip-education" style="opacity: 1; width:'+ that.props.eduImageTextWidth +'px "><p>Growing Wealth Goal</p> <h2><span>'+ 
-            that.props.growingAmt +'</span></h2></div>');
+    // adding foreign object for the first target education maker text
+    var eduText = select('.growthSvg')
+                .append("foreignObject").attr("class", "foreign div")
+                .attr("x", xScale(new Date(that.props.goals[0].actualYear))-that.props.eduImageTextWidth+40)
+                .attr("y", yScale(that.props.goals[0].value) )
+                .attr('width', that.props.eduImageTextWidth)
+                .attr('height', that.props.eduImageTextWidth/2)
+                .style("display", "block")
+                .style("position", "absolute")
+      // appending div inside foreign object
+      var tooltipFirstGoal =  eduText
+                .append("xhtml:div").attr("xmlns", "http://www.w3.org/2000/html")
+                .attr("id", "eduDiv")
+                .style("display", "block")
+                .html('<div class="tooltip-education" style="opacity: 1; width:'+ that.props.eduImageTextWidth +'px "><p>Growing Wealth Goal</p> <h2><span>'+ 
+                 that.props.growingAmt +'</span></h2></div>');
+
+    // adding foreign object for the second target retiement maker
+    var retireText = select('.growthSvg')
+                .append("foreignObject").attr("class", "foreign div")
+                .attr("x", xScale(new Date(that.props.goals[1].actualYear))-that.props.retireImageTextWidth+30)
+                .attr("y", yScale(that.props.goals[1].value) -10)
+                .attr('width', that.props.retireImageTextWidth)
+                .attr('height', that.props.retireImageTextWidth/2)
 
         // adding text to the peak point retirement maker
-        var tooltipSecondGoal = select("body")
-            .append("div")
+        var tooltipSecondGoal = retireText
+            .append("xhtml:div").attr("xmlns", "http://www.w3.org/2000/html")
             .attr("id", "retireDiv")
             .style("display", "block")
-            .style("position", "absolute")
-            .style("left",xScale(new Date(that.props.peakPoint)) - left-40 + "px")
-            .style("top","10px")
             .html('<div class="tooltip-retirement" style="opacity: 1; width:'+ that.props.retireImageTextWidth +'px "><p>Retirement Savings Goal </p><h2><span>'+ 
             that.props.retirementAmt +'</span></h2> </div>');
 
